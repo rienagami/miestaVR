@@ -1,0 +1,57 @@
+var CeilingLights = {
+  controller: function(attr) {
+    var lightPoses = [];
+    for (var widthLightIndex = 0; widthLightIndex <= 5; widthLightIndex += 1) {
+      for (var depthLightIndex = 0; depthLightIndex <= 7; depthLightIndex += 1) {
+        lightPoses.push([
+          attr.theaterData.width * 0.8 * widthLightIndex / 5 - attr.theaterData.width * 0.4,
+          attr.theaterData.depth * 0.8 * depthLightIndex / 7 - attr.theaterData.depth * 0.4,
+          0.01
+        ]);
+      }
+    }
+
+    return {
+      lightPoses: lightPoses,
+      ceilGeo: {
+        type: 'PlaneBuffer',
+        value: [1,1]
+      },
+      ceilMtl: {
+        type: 'MeshBasic',
+        value: {
+          color: '#000'
+        }
+      },
+      lightGeo: {
+        type: 'PlaneBuffer',
+        value: [0.4, 0.4]
+      },
+      lightMtl: {
+        type: 'MeshBasic',
+        value: {
+          map: {
+            type: 'image',
+            src: '/asset/img/white-glow.png'
+          },
+          transparent: true,
+          opacity: 0.55
+        }
+      }
+    };
+  },
+  view: function(ctrl, attr) {
+    return <obj style={{ rotateX: Math.PI / 2, posY: attr.theaterData.height / 2 - 0.01 }}>
+      <mesh geo={ctrl.ceilGeo} mtl={ctrl.ceilMtl}
+        style={{
+          scale: [attr.theaterData.width, attr.theaterData.depth, 1]
+        }}
+      />
+      {
+        ctrl.lightPoses.map(function(pos) {
+          return <mesh geo={ctrl.lightGeo} mtl={ctrl.lightMtl} style={{ pos: pos }}/>;
+        })
+      }
+    </obj>;
+  }
+};

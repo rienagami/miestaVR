@@ -1,0 +1,96 @@
+var GeneralSeat = {
+  controller: function(attr) {
+    var armWidth = 0.12;
+    var seatWidth = attr.width - armWidth;
+    return {
+      armWidth,
+      seatGeo: {
+        type: 'BoxBuffer',
+        value: [seatWidth, 0.15, 0.7]
+      },
+      seatMtl: {
+        type: 'MeshPhong',
+        value: {
+          map: {
+            type: 'image',
+            src: '/asset/img/gray.jpg'
+          }
+        }
+      },
+
+      headGeo: {
+        type: 'BoxBuffer',
+        value: [seatWidth - 0.3, 0.15, 0.15]
+      },
+
+      backGeo: {
+        type: 'BoxBuffer',
+        value: [seatWidth, 1.05, 0.15]
+      },
+
+      armGeo: {
+        type: 'BoxBuffer',
+        value: [0.12, 0.09, 0.5]
+      },
+
+      shoulderGeo: {
+        type: 'CylinderBuffer',
+        value: [0.15, 0.15, 0.15, 0.9, 0.9, false, 0, Math.PI / 2]
+      },
+        
+      holderGeo: {
+        type: 'TorusBuffer',
+        value: [0.065, 0.008, 30,200,6.3]
+      },
+      holderMtl: {
+        type: 'MeshLambert',
+        value: {
+          color: '#222222'
+        }
+      },
+        
+    holderButtomGeo: {
+        type: 'TorusBuffer',
+        value: [0.04, 0.02, 2,200,6.3]
+      },
+      holderButtomMtl: {
+        type: 'MeshLambert',
+        value: {
+          color: '#000'
+        }
+      },
+        
+    };
+  },
+  view: function(ctrl, attr) {
+    return <obj>
+      {
+        attr.data.map(function(data) {
+          return <obj style={{ pos: data.pos }}>
+            <obj style={{ posY: ctrl.backGeo.value[1] / 2 - 0.09 }}>
+              <mesh geo={ctrl.seatGeo} mtl={ctrl.seatMtl}/>
+              <mesh geo={ctrl.headGeo} mtl={ctrl.seatMtl} style={{ pos: [0, 0.69, -0.3] }}/>
+              <mesh geo={ctrl.backGeo} mtl={ctrl.seatMtl} style={{ pos: [0, 0.09, -0.3],rotateX: Math.PI * 4 }}/>
+              {
+                data.isLeftEnd &&
+                <obj style={{ pos: [attr.width / 2, 0.15, 0] }}>
+                  <mesh geo={ctrl.armGeo} mtl={ctrl.seatMtl} style={{ posZ: -0.07 }}/>
+                  <mesh geo={ctrl.holderGeo} mtl={ctrl.holderMtl} style={{ posZ: 0.2,rotateX: [Math.PI * -0.5],scaleZ:8  }}/>
+                  <mesh geo={ctrl.holderButtomGeo} mtl={ctrl.holderButtomMtl} style={{ posZ: 0.2,rotateX: [Math.PI * -0.5] }}/>
+                </obj>
+              }
+              <obj style={{ pos: [-attr.width / 2, 0.15, 0] }}>
+                <mesh geo={ctrl.armGeo} mtl={ctrl.seatMtl} style={{ posZ: -0.07 }}/>
+                <mesh geo={ctrl.holderGeo} mtl={ctrl.holderMtl} style={{ posZ: 0.2,rotateX: [Math.PI * -0.5],scaleZ:8 }}/>
+                <mesh geo={ctrl.holderButtomGeo} mtl={ctrl.holderButtomMtl} style={{ posZ: 0.2,rotateX: [Math.PI * -0.5]}}/>
+              </obj>
+              <mesh geo={ctrl.shoulderGeo} mtl={ctrl.seatMtl} style={{ pos: [(attr.width - ctrl.armWidth) / 2 - 0.15, 0.615, -0.3], rotateX: Math.PI * -0.5 }}/>
+              <mesh geo={ctrl.shoulderGeo} mtl={ctrl.seatMtl} style={{ pos: [0.15 - (attr.width - ctrl.armWidth) / 2, 0.615, -0.3], rotate: [Math.PI * -0.5, 0, Math.PI] }}/>
+            </obj>
+            {data.selling && <Parson/>}
+          </obj>;
+        })
+      }
+      </obj>;
+  }
+};

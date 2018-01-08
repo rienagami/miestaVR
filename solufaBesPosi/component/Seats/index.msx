@@ -1,0 +1,67 @@
+var m = Solufa.m;
+
+var Seats = {
+  controller: function(attr) {
+    var generalParsonList = attr.viewup.map(function(seatRow, stepN) {
+      return seatRow.map(function(isExists, seatIndex) {
+        return Math.floor(Math.random() * 100) % 3 === 0;
+      });
+    });
+    var executiveParsonList = attr.viewup2.map(function(seatRow, stepN) {
+      return seatRow.map(function(isExists, seatIndex) {
+        return Math.floor(Math.random() * 100) % 3 === 0;
+      });
+    });
+
+    var generalSeatData = [];
+    var executiveSeatData = [];
+    var accessibleSeatData = [];
+
+    attr.viewup.forEach(function(seatRow, stepN) {
+      var stepHeight = calcStepHeight(attr.viewside, stepN);
+      seatRow.forEach(function(isExists, seatIndex) {
+        if (isExists === 0) return;
+        generalSeatData.push({
+          pos: [
+            attr.theaterData.width / 2 - attr.unitFloorSize.width * (seatIndex + 0.5),
+            attr.unitFloorSize.height * stepHeight - attr.theaterData.height / 2,
+            attr.frontLineZ - attr.unitFloorSize.depth * (stepN + 0.5)
+          ],
+          selling: generalParsonList[stepN][seatIndex],
+          isLeftEnd: seatRow[seatIndex - 1] === 0
+        });
+      });
+    });
+
+    attr.viewup2.forEach(function(seatRow, stepN) {
+      var stepHeight = calcStepHeight(attr.viewside, stepN);
+      seatRow.forEach(function(isExists, seatIndex) {
+        if (isExists === 0) return;
+        var data = {
+          pos: [
+            attr.theaterData.width / 2 - attr.unitFloorSize.width * (2 * seatIndex + 1),
+            attr.unitFloorSize.height * stepHeight - attr.theaterData.height / 2,
+            attr.frontLineZ - attr.unitFloorSize.depth * (stepN + 0.5)
+          ],
+          selling: executiveParsonList[stepN][seatIndex]
+        };
+
+        if (isExists === 2) executiveSeatData.push(data);
+        else accessibleSeatData.push(data);
+      });
+    });
+
+    return {
+      generalSeatData,
+      executiveSeatData,
+      accessibleSeatData,
+    };
+  },
+  view: function(ctrl, attr) {
+    return <obj>
+        <GeneralSeat data={ctrl.generalSeatData} width={attr.unitFloorSize.width}/>
+        <ExecutiveSeat data={ctrl.executiveSeatData}/>
+        <AccessibleSeat data={ctrl.accessibleSeatData}/>
+      </obj>;
+  }
+};

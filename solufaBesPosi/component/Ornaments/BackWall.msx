@@ -1,0 +1,65 @@
+var BackWall = {
+    controller: function(attr){
+      return {
+          
+          
+          backWallGeo:{
+              type:'PlaneBuffer',
+              value:[attr.theaterData.width,attr.theaterData.height]
+          },
+          backWallMtl:{
+              type:'MeshPhong',
+              value:{
+              map: {
+                  type:'image',
+                  src: '/asset/img/backWall.jpg'
+              }
+              }
+          },
+          
+          curtainWallGeo:{
+              type:'PlaneBuffer',
+              value:[2.3,attr.theaterData.height]
+          },
+          curtainWallMtl:{
+              type:'MeshPhong',
+              value:{
+              map: {
+                  type:'image',
+                  src: '/asset/img/curtain.jpg'
+              }
+              }
+          },
+          
+          projectionBoothGeo:{
+              type:'PlaneBuffer',
+              value:[1.5,0.5]
+          },
+          projectionBoothMtl:{
+              type:'MeshStandard',
+              value:{
+                  color:'#0d0d0d'
+                 
+              }
+              },
+           
+          
+          
+      };
+   
+    },
+    
+    view:function(ctrl,attr){
+        return <obj>
+        <mesh geo ={ctrl.backWallGeo} mtl={ctrl.backWallMtl} style={{ pos: [0, 0, 7.45], rotateY: Math.PI * 1 }}/>
+        
+        <mesh geo ={ctrl.curtainWallGeo} mtl={ctrl.curtainWallMtl} style={{ pos: [-5.5, 0, 7.3], rotateY: Math.PI * 1 }}/>
+        <mesh geo ={ctrl.curtainWallGeo} mtl={ctrl.curtainWallMtl} style={{ pos: [5.5, 0, 7.3], rotateY: Math.PI * 1 }}/>
+        
+
+        <mesh geo ={ctrl.projectionBoothGeo} mtl={ctrl.projectionBoothMtl} style={{ pos: [0, 2.5, -7.47]}}/>
+      
+       
+        </obj> ;
+    }
+};

@@ -1,0 +1,61 @@
+var Parson = {
+ controller: function(attr){
+ return {
+   
+
+
+         parsonHeadGeo:{
+        type:'SphereBuffer',
+        value:[0.19,32,32,6,6.3,6,6.3]
+      },
+      parsonMtl:{
+          type:'MeshPhong',
+          value:{
+          map:{
+          type:'image',
+          src:'/asset/img/hair.png'
+              }
+          }
+      },
+   
+    parsonBodyGeo:{
+        type:'BoxBuffer',
+        value:[0.4,0.6,0.2]
+      },
+      parsonBodyMtl:{ 
+        type:'MeshPhong',
+        value:{
+          color:0xffff00
+        }
+          },
+   
+      parsonFootGeo:{
+        type:'BoxBuffer',
+        value:[0.15,0.15,0.3]
+      },
+      parsonFootMtl:{ 
+        type:'MeshPhong',
+        value:{
+          color:0xffff00
+        }
+          },
+   
+   
+   
+   
+        };
+ 
+ 
+    },
+ view: function(ctrl,attr){
+   return <obj style= {{ pos: attr.pos}}>
+       <mesh geo={ctrl.parsonBodyGeo} mtl={ctrl.parsonBodyMtl} style={{ posY: -0.48}}/>
+       <mesh geo={ctrl.parsonHeadGeo} mtl={ctrl.parsonMtl} style = {{rotateZ:Math.PI*1}} />
+       <mesh geo={ctrl.parsonFootGeo} mtl={ctrl.parsonFootMtl} style={{ posX:0.09,posY: -0.6,posZ:0.25}}/>
+       <mesh geo={ctrl.parsonFootGeo} mtl={ctrl.parsonFootMtl} style={{ posX:-0.09,posY: -0.9,posZ:0.3,rotateX:Math.PI * -0.5  }}/>
+       <mesh geo={ctrl.parsonFootGeo} mtl={ctrl.parsonFootMtl} style={{ posX:-0.09,posY: -0.9,posZ:0.3,rotateX:Math.PI * -0.5 }}/>
+     
+
+   </obj>;
+ }
+};

@@ -1,0 +1,45 @@
+var StepFloor = {
+  controller: function(attr) {
+    return {
+      floorGeo: {
+        type: 'BoxBuffer',
+        value: [1,1,1]
+      },
+      bottomFloorGeo: {
+        type: 'PlaneBuffer',
+        value: [1,1]
+      },
+      floorMtl: {
+        type: 'MeshPhong',
+        value: {
+          map: {
+            type: 'image',
+            src: '/asset/img/floor.jpg'
+          }
+        }
+      }
+    };
+  },
+  view: function(ctrl, attr) {
+    return <obj>
+      <mesh geo={ctrl.bottomFloorGeo} mtl={ctrl.floorMtl}
+        style={{
+          rotateX: -Math.PI / 2,
+          scale: [attr.theaterData.width, attr.theaterData.depth, 1],
+          posY: 0.01 - attr.theaterData.height / 2
+        }}
+      />
+      {
+        attr.viewside[0].map(function(isExists, stepN) {
+          var stepHeight = calcStepHeight(attr.viewside, stepN);
+          if (stepHeight === 0) return;
+          return <mesh geo={ctrl.floorGeo} mtl={ctrl.floorMtl}
+            style={{
+              pos: [0, (attr.unitFloorSize.height * stepHeight - attr.theaterData.height) / 2, attr.frontLineZ - attr.unitFloorSize.depth * (stepN + 0.5)],
+              scale: [attr.theaterData.width, attr.unitFloorSize.height * stepHeight, attr.unitFloorSize.depth]
+            }}/>;
+        })
+      }
+    </obj>;
+  },
+};

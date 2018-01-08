@@ -1,0 +1,32 @@
+var Screen = {
+  controller: function(attr) {
+    var standardLength = attr.standardLength;
+    var radius = attr.radius;
+    var screenHeight = radius / 16 * 9 * standardLength;
+    var thetaStart = - standardLength / 2;
+
+    var video = document.createElement('video');
+    video.src = '/asset/video/Kingsman_ The Golden Circle.mp4';
+    video.autoplay = true;
+    video.loop = true;
+
+    return {
+      screenGeo: {
+        type: 'CylinderBuffer',
+        value: [radius, radius, screenHeight, 64, 64, true, thetaStart, standardLength]
+      },
+      screenMtl: {
+        type: 'MeshBasic',
+        value: {
+          map: {
+            type: 'video',
+            src: video
+          }
+        }
+      },
+    };
+  },
+  view: function(ctrl, attr) {
+    return <mesh geo={ctrl.screenGeo} mtl={ctrl.screenMtl} style={{ pos: attr.pos, scaleX: -1 }}/>;
+  }
+};

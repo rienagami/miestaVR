@@ -1,0 +1,26 @@
+var Parson = {
+  controller: function() {
+    return {
+      headGeo: {
+        type: 'SphereBuffer',
+        value: [0.2, 64, 64]
+      },
+      bodyGeo: {
+        type: 'SphereBuffer',
+        value: [0.2, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2]
+      },
+      mtl: {
+        type: 'MeshPhong',
+        value: {
+          color: Math.random() > 0.5 ? '#035' : '#732'
+        }
+      },
+    };
+  },
+  view: function(ctrl, attr) {
+    return <obj style={{ posY: 1.1 }}>
+        <mesh geo={ctrl.headGeo} mtl={ctrl.mtl}/>
+        <mesh geo={ctrl.bodyGeo} mtl={ctrl.mtl} style={{ posY: -0.65, scale: [1.3, 2.5, 1.1] }}/>
+      </obj>;
+  }
+};

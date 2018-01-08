@@ -1,0 +1,119 @@
+S(function(m) {
+  getData(function(jsonData) {
+    var theaterData = jsonData.theaterData;
+    var viewup = jsonData.viewup;
+    var viewup2 = jsonData.viewup2;
+    var viewside = jsonData.viewside;
+    var screenData = jsonData.screenData;
+
+    var App = {
+      controller: function() {
+        return {
+          selfPos: selfPos,
+          camStyle: { pos: [0, 1.2, -0.01], lookAtY: 1.2 },
+          mountedCamElem: function(elem, isInit) {
+            if (isInit) return;
+
+            selfPos.setCam(elem);
+
+            window.addEventListener('keydown', function(e) {
+              switch (e.keyCode) {
+                case 37: // left
+                  selfPos.left();
+                  m.redraw();
+                  break;
+                case 38: // go
+                  selfPos.go();
+                  m.redraw();
+                 break;
+                case 39: // right
+                  selfPos.right();
+                  m.redraw();
+                 break;
+                case 40: // back
+                  selfPos.back();
+                  m.redraw();
+                  break;
+              }
+            }, false);
+          },
+          unitFloorSize: {
+            width: theaterData.width / viewup[0].length,
+            height: theaterData.height / viewside.length,
+            depth: (theaterData.depth - theaterData.frontmargin) / viewup.length
+          },
+          frontLineZ: theaterData.depth / 2 - theaterData.frontmargin,
+          theaterGeo: {
+            type: 'BoxBuffer',
+            value: [theaterData.width, theaterData.height, theaterData.depth]
+          },
+          theaterMtl: {
+            type: 'MeshPhong',
+            value: {
+              side: 1,
+              map: {
+                type: 'image',
+                src: '/asset/img/wall.png'
+              }
+            },
+          },
+
+        };
+      },
+      view: function(ctrl) {
+        return <scene>
+            <Screen
+              standardLength={screenData.standardLength}
+              radius={screenData.radius}
+              pos={screenData.pos}
+            />
+            <StepFloor
+              unitFloorSize={ctrl.unitFloorSize}
+              frontLineZ={ctrl.frontLineZ}
+              viewside={viewside}
+              theaterData={theaterData}
+            />
+            <Seats
+              unitFloorSize={ctrl.unitFloorSize}
+              frontLineZ={ctrl.frontLineZ}
+              viewside={viewside}
+              viewup={viewup}
+              viewup2={viewup2}
+              theaterData={theaterData}
+            />
+            
+            <CeilingLights theaterData={theaterData}/>
+            
+            <BackWall theaterData={theaterData}/>
+            
+            
+            <mesh geo={ ctrl.theaterGeo } mtl={ ctrl.theaterMtl }/>
+            
+            <light init={{ type: 'Dir', value: [0xfffcf9, 0.5] }} style={{ pos: [0, 230, 500] }}/>
+            <obj style={{ pos: [
+              (0.5 - ctrl.selfPos.width) * theaterData.width,
+              ctrl.unitFloorSize.height * calcStepHeight(
+                viewside,
+                Math.max(Math.floor((ctrl.selfPos.depth - ctrl.unitFloorSize.depth / 2 / (theaterData.depth / 2 + ctrl.frontLineZ)) * viewside[0].length), 0)
+              ) - theaterData.height / 2,
+              (0.5 - ctrl.selfPos.depth) * (theaterData.depth / 2 + ctrl.frontLineZ)
+            ] }}>
+              <cam id="mainCam" style={ctrl.camStyle} near={0.01} config={ctrl.mountedCamElem}>
+                <obj style={{ posZ: -1 }}>
+                  <obj style={{ pos: [1, 0, 1] }}/>
+                </obj>
+              </cam>
+            </obj>
+            <light init={{ type: 'Amb', value: [0x505050] }}/>
+          </scene>;
+      }
+    };
+  
+    m.mount(S.document.body, App);
+    m.render(S.document.head,
+      <rdr init={{ frame: '#solufa', antialias: true }}>
+        <OrbitVp cam="#mainCam" enablePan={false} reverse={true} enableZoom={false}/>
+      </rdr>
+    );
+  });
+});
